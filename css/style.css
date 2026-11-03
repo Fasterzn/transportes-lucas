@@ -259,12 +259,8 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 .marca{display:inline-flex;align-items:center}
 .marca__svg{
   width:auto;height:52px;
-  fill:var(--red);                /* vermelho da marca */
+  fill:var(--red);                /* vermelho da marca, sem contorno */
   transition:height .3s var(--e);
-  /* contorno branco fino: o vermelho sozinho some sobre o vídeo escuro
-     do banner e sobre o fundo do rodapé */
-  paint-order:stroke;
-  stroke:#fff;stroke-width:2.2;stroke-linejoin:round;
 }
 .marca__svg use{fill:inherit}
 
