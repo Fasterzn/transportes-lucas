@@ -1,0 +1,8 @@
+# documentação interna de entrega — fica só na máquina
+LEIA-ME.md
+
+# fotos que hoje não aparecem em nenhuma seção
+assets/img/extras/
+
+.DS_Store
+Thumbs.db
