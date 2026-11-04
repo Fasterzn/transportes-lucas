@@ -634,67 +634,34 @@
     var a1 = $('#anoAtual'); if (a1) a1.textContent = '© ' + ano;
     var a2 = $('#privData'); if (a2) a2.textContent = 'novembro de ' + ano;
 
-    /* --- vídeo de fundo do banner + botão de pausar/assistir ---
-       O vídeo fica sempre visível. O que muda é se ele toca sozinho:
-       com "animações" desligadas no sistema, ou se o navegador bloquear
-       o autoplay, ele fica parado no poster e o botão convida a assistir. */
-    var heroBtn = $('#heroBtn');
-
+    /* --- vídeo de fundo do banner ---
+       Toca sozinho, sempre, sem nada para clicar. Decisão do cliente:
+       vale também quando o sistema está com animações desligadas.
+       Como é mudo, nenhum navegador bloqueia o autoplay; mesmo assim
+       insistimos algumas vezes, porque economia de bateria e aba em
+       segundo plano podem atrasar o início. */
     function heroAtual() {
       return $$('.hero__video').filter(function (v) {
         return getComputedStyle(v).display !== 'none';
       })[0];
     }
 
-    function marcarBotao(tocando) {
-      if (!heroBtn) return;
-      heroBtn.setAttribute('aria-pressed', String(tocando));
-      heroBtn.setAttribute('aria-label', tocando ? 'Pausar vídeo de fundo' : 'Assistir ao vídeo de fundo');
-    }
-
-    var heroPausadoPeloUsuario = SEM_MOVIMENTO;
-
     function tocarHero() {
       var v = heroAtual();
-      if (!v || heroPausadoPeloUsuario) return;
+      if (!v) return;
       var p = v.play();
-      if (p && p.then) {
-        p.then(function () { marcarBotao(true); })
-         .catch(function () { marcarBotao(false); });   // autoplay bloqueado
-      } else {
-        marcarBotao(true);
-      }
+      if (p && p.catch) p.catch(function () { /* tentamos de novo adiante */ });
     }
 
-    if (SEM_MOVIMENTO) {
-      $$('.hero__video').forEach(function (v) { v.pause(); v.removeAttribute('autoplay'); });
-      marcarBotao(false);
-    } else {
-      tocarHero();
-      document.addEventListener('visibilitychange', function () { if (!document.hidden) tocarHero(); });
-    }
-
-    if (heroBtn) {
-      heroBtn.addEventListener('click', function () {
-        var v = heroAtual();
-        if (!v) return;
-        if (v.paused) {
-          heroPausadoPeloUsuario = false;
-          var p = v.play();
-          if (p && p.then) p.then(function () { marcarBotao(true); }).catch(function () { marcarBotao(false); });
-          else marcarBotao(true);
-        } else {
-          heroPausadoPeloUsuario = true;
-          v.pause();
-          marcarBotao(false);
-        }
-      });
-      // ao trocar de faixa de tela, o vídeo visível muda
-      window.matchMedia('(min-width: 981px)').addEventListener('change', function () {
-        $$('.hero__video').forEach(function (v) { v.pause(); });
-        tocarHero();
-      });
-    }
+    tocarHero();
+    [400, 1200, 3000].forEach(function (ms) { setTimeout(tocarHero, ms); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) tocarHero(); });
+    // se o navegador só liberar depois de uma interação, pegamos a primeira
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+      document.addEventListener(ev, tocarHero, { once: true, passive: true });
+    });
+    // ao cruzar o ponto de troca entre o vídeo horizontal e o vertical
+    window.matchMedia('(min-width: 981px)').addEventListener('change', tocarHero);
 
     // botão de pausar/retomar o vídeo de drone
     var reel = $('#reelVideo'), reelBtn = $('#reelBtn');

@@ -46,7 +46,7 @@
   --ff:'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* Escala fluida */
-  --t-h1:clamp(2.1rem, 1.15rem + 3.9vw, 4.3rem);
+  --t-h1:clamp(1.75rem, 1rem + 2.6vw, 3.3rem);
   --t-tit:clamp(1.75rem, 1.3rem + 1.9vw, 2.7rem);
   --t-h3:clamp(1.28rem, 1.14rem + .6vw, 1.6rem);
   --t-body:clamp(1rem, .97rem + .18vw, 1.08rem);
@@ -354,39 +354,6 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
     rgba(15,17,21,.74) 64%,
     rgba(15,17,21,.88) 100%);
 }
-
-/* botão de pausar/assistir o vídeo de fundo.
-   Quando está pausado ele cresce e mostra o texto, para ficar claro que
-   dá para assistir — é o estado de quem desligou animações no sistema
-   ou de quem teve o autoplay bloqueado pelo navegador. */
-.hero__ctrl{
-  position:absolute;z-index:3;
-  right:max(16px,var(--gut));
-  /* acima da borda dos cards de serviço, que sobem por cima do banner */
-  bottom:clamp(136px,17vh,196px);
-  display:inline-flex;align-items:center;gap:0;
-  height:42px;padding:0 11px;
-  color:#fff;
-  background:rgba(15,17,21,.5);
-  border:1px solid rgba(255,255,255,.3);
-  border-radius:var(--r-pill);
-  transition:background .25s var(--e), gap .25s var(--e), padding .25s var(--e);
-}
-.hero__ctrl:hover{background:rgba(15,17,21,.82)}
-.hero__ctrl .ic{width:18px;height:18px;stroke-width:2;fill:none;flex:none}
-.hero__play{display:none;fill:currentColor;stroke:none}
-.hero__ctrl-txt{
-  font-size:.86rem;font-weight:700;white-space:nowrap;
-  max-width:0;overflow:hidden;
-  transition:max-width .3s var(--e);
-}
-.hero__ctrl[aria-pressed="false"]{
-  background:var(--red);border-color:var(--red);
-  gap:8px;padding-right:18px;
-}
-.hero__ctrl[aria-pressed="false"] .hero__pausa{display:none}
-.hero__ctrl[aria-pressed="false"] .hero__play{display:block}
-.hero__ctrl[aria-pressed="false"] .hero__ctrl-txt{max-width:190px}
 
 .hero__in{position:relative}
 
@@ -1284,6 +1251,20 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 @media (min-width:1480px){
   .carro__nav--ant{left:-56px}
   .carro__nav--prox{right:-56px}
+}
+
+/* ≥ 1500px — em tela larga o container de 1360px joga o cabeçalho e o
+   título do banner para o meio da tela. Esses dois passam a usar a
+   largura toda com margem proporcional, continuando alinhados entre si.
+   As seções de conteúdo seguem centralizadas, senão a linha de texto
+   ficaria longa demais para ler. */
+@media (min-width:1500px){
+  .topo__in,
+  .hero__in,
+  .servicos > .wrap{          /* os cards sobem por cima do banner: alinham junto */
+    max-width:none;
+    padding-inline:clamp(48px,5.5vw,140px);
+  }
 }
 
 /* ---------------------------------------------------------------
