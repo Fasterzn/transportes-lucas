@@ -647,6 +647,43 @@
       });
     }
 
+    // botão de pausar/retomar o vídeo de drone
+    var reel = $('#reelVideo'), reelBtn = $('#reelBtn');
+    if (reel && reelBtn) {
+      if (SEM_MOVIMENTO) {
+        reel.pause();
+        reel.removeAttribute('autoplay');
+        reelBtn.setAttribute('aria-pressed', 'false');
+        reelBtn.setAttribute('aria-label', 'Reproduzir vídeo');
+      } else if ('IntersectionObserver' in window) {
+        // só toca enquanto está na tela: economiza dados no celular,
+        // já que o arquivo tem alguns MB e fica no meio da página
+        var pausadoPeloUsuario = false;
+        reelBtn.addEventListener('click', function () { pausadoPeloUsuario = !reel.paused; });
+        new IntersectionObserver(function (ens) {
+          ens.forEach(function (en) {
+            if (en.isIntersecting && !pausadoPeloUsuario) {
+              var pr = reel.play();
+              if (pr && pr.catch) pr.catch(function () {});
+            } else if (!en.isIntersecting) {
+              reel.pause();
+            }
+          });
+        }, { threshold: .25 }).observe(reel);
+      }
+      reelBtn.addEventListener('click', function () {
+        if (reel.paused) {
+          reel.play();
+          reelBtn.setAttribute('aria-pressed', 'true');
+          reelBtn.setAttribute('aria-label', 'Pausar vídeo');
+        } else {
+          reel.pause();
+          reelBtn.setAttribute('aria-pressed', 'false');
+          reelBtn.setAttribute('aria-label', 'Reproduzir vídeo');
+        }
+      });
+    }
+
     // rolagem suave compensando o header fixo
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href^="#"]');

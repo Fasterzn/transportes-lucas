@@ -742,6 +742,69 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 .fcard[aria-selected="true"]::after{background:var(--red)}
 
 /* ---------------------------------------------------------------
+   10b. FROTA EM OPERAÇÃO — vídeo vertical de drone
+   --------------------------------------------------------------- */
+.operacao__grade{
+  display:grid;gap:clamp(28px,3.4vw,52px);
+  justify-items:center;
+  grid-template-areas:"video" "cred" "pontos";
+}
+.operacao__grade .reel{grid-area:video}
+.operacao__grade .reel__cred{grid-area:cred;margin-top:-34px}
+.operacao__grade .operacao__pontos{grid-area:pontos}
+
+.reel{
+  position:relative;margin:0;
+  width:100%;max-width:360px;
+  border-radius:22px;overflow:hidden;
+  background:var(--ink);
+  box-shadow:var(--sh-3);
+}
+.reel__v{
+  display:block;width:100%;height:auto;
+  aspect-ratio:9/16;object-fit:cover;
+}
+.reel__tag{
+  position:absolute;z-index:2;left:12px;top:12px;
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(15,17,21,.78);color:#fff;
+  font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 13px;border-radius:var(--r-pill);
+}
+.reel__ponto{
+  width:7px;height:7px;border-radius:50%;background:var(--red);flex:none;
+}
+.reel__btn{
+  position:absolute;z-index:2;right:12px;top:12px;
+  width:38px;height:38px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(15,17,21,.78);color:#fff;border-radius:50%;
+  transition:background .2s var(--e);
+}
+.reel__btn:hover{background:var(--red)}
+.reel__btn .ic{width:19px;height:19px;stroke-width:2;fill:none}
+.reel__play{display:none;fill:currentColor;stroke:none}
+/* quando pausado, troca o ícone */
+.reel__btn[aria-pressed="false"] .reel__pausa{display:none}
+.reel__btn[aria-pressed="false"] .reel__play{display:block}
+
+/* crédito fora do card, para não duplicar a marca d'água do próprio vídeo */
+.reel__cred{
+  margin:10px 0 0;width:100%;max-width:360px;
+  font-size:.78rem;color:var(--mut);text-align:center;
+}
+
+.operacao__pontos{display:grid;gap:22px;max-width:520px}
+.operacao__pontos li{display:flex;gap:14px;align-items:flex-start}
+.op__ic{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;flex:none;color:var(--red);
+}
+.op__ic .ic{width:32px;height:32px;stroke-width:1.5}
+.operacao__pontos h3{font-size:1.1rem;font-weight:800;margin-bottom:.2em;color:var(--txt)}
+.operacao__pontos p{font-size:.95rem;color:var(--mut);line-height:1.55;margin:0}
+
+/* ---------------------------------------------------------------
    11. SOLUÇÕES — quatro frentes com foto
    --------------------------------------------------------------- */
 .sols{display:grid;gap:18px;grid-template-columns:1fr}
@@ -1141,6 +1204,17 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
   /* frota: foto grande à esquerda, lista de modalidades à direita */
   .frota__grade{grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
   .frota__palco{aspect-ratio:auto;min-height:480px}
+
+  /* frota em operação: vídeo à esquerda, pontos à direita */
+  .operacao__grade{
+    grid-template-columns:auto 1fr;
+    grid-template-areas:"video pontos" "cred pontos";
+    gap:0 clamp(40px,5vw,80px);
+    justify-items:start;align-items:center;max-width:960px;margin-inline:auto;
+  }
+  .operacao__grade .operacao__pontos{align-self:center}
+  .operacao__grade .reel__cred{margin-top:10px;text-align:left}
+  .reel{width:360px}
 
   /* soluções: duas colunas */
   .sols{grid-template-columns:repeat(2,1fr);gap:22px}
