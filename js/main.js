@@ -634,16 +634,65 @@
     var a1 = $('#anoAtual'); if (a1) a1.textContent = '© ' + ano;
     var a2 = $('#privData'); if (a2) a2.textContent = 'novembro de ' + ano;
 
+    /* --- vídeo de fundo do banner + botão de pausar/assistir ---
+       O vídeo fica sempre visível. O que muda é se ele toca sozinho:
+       com "animações" desligadas no sistema, ou se o navegador bloquear
+       o autoplay, ele fica parado no poster e o botão convida a assistir. */
+    var heroBtn = $('#heroBtn');
+
+    function heroAtual() {
+      return $$('.hero__video').filter(function (v) {
+        return getComputedStyle(v).display !== 'none';
+      })[0];
+    }
+
+    function marcarBotao(tocando) {
+      if (!heroBtn) return;
+      heroBtn.setAttribute('aria-pressed', String(tocando));
+      heroBtn.setAttribute('aria-label', tocando ? 'Pausar vídeo de fundo' : 'Assistir ao vídeo de fundo');
+    }
+
+    var heroPausadoPeloUsuario = SEM_MOVIMENTO;
+
+    function tocarHero() {
+      var v = heroAtual();
+      if (!v || heroPausadoPeloUsuario) return;
+      var p = v.play();
+      if (p && p.then) {
+        p.then(function () { marcarBotao(true); })
+         .catch(function () { marcarBotao(false); });   // autoplay bloqueado
+      } else {
+        marcarBotao(true);
+      }
+    }
+
     if (SEM_MOVIMENTO) {
       $$('.hero__video').forEach(function (v) { v.pause(); v.removeAttribute('autoplay'); });
+      marcarBotao(false);
     } else {
-      $$('.hero__video').forEach(function (v) {
-        var tocar = function () {
+      tocarHero();
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) tocarHero(); });
+    }
+
+    if (heroBtn) {
+      heroBtn.addEventListener('click', function () {
+        var v = heroAtual();
+        if (!v) return;
+        if (v.paused) {
+          heroPausadoPeloUsuario = false;
           var p = v.play();
-          if (p && p.catch) p.catch(function () { /* fica no poster */ });
-        };
-        tocar();
-        document.addEventListener('visibilitychange', function () { if (!document.hidden) tocar(); });
+          if (p && p.then) p.then(function () { marcarBotao(true); }).catch(function () { marcarBotao(false); });
+          else marcarBotao(true);
+        } else {
+          heroPausadoPeloUsuario = true;
+          v.pause();
+          marcarBotao(false);
+        }
+      });
+      // ao trocar de faixa de tela, o vídeo visível muda
+      window.matchMedia('(min-width: 981px)').addEventListener('change', function () {
+        $$('.hero__video').forEach(function (v) { v.pause(); });
+        tocarHero();
       });
     }
 
