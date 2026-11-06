@@ -615,22 +615,62 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
   stroke:#39404c;stroke-width:1.4;
   transition:fill .35s var(--e), stroke .35s var(--e), opacity .35s var(--e);
 }
-/* estado atendido */
+/* estado atendido — preenchimento em degradê, não chapado */
 .cob__ufs .uf.on{
-  fill:#c01029;stroke:#ff5a72;stroke-width:1.6;cursor:pointer;
+  fill:url(#grad-on);stroke:#ff5a72;stroke-width:1.6;cursor:pointer;
 }
 .cob__ufs .uf.on:hover,
-.cob__ufs .uf.on.realce{fill:var(--red);stroke:#fff;stroke-width:2.2}
+.cob__ufs .uf.on.realce{fill:#ff2d4d;stroke:#fff;stroke-width:2.2}
+
+/* --- rotas saindo da matriz --- */
+.cob__rotas .rota{
+  stroke:rgba(255,255,255,.42);stroke-width:1.8;
+  stroke-dasharray:1 1;stroke-dashoffset:1;
+  animation:rotaDesenha 1.5s var(--e) forwards;
+  animation-delay:var(--atraso,0s);
+}
+@keyframes rotaDesenha{to{stroke-dashoffset:0}}
+
+/* carga percorrendo a rota */
+.cob__rotas .rota-pulso{
+  stroke:#ff5a72;stroke-width:2.6;stroke-linecap:round;
+  stroke-dasharray:.05 .95;stroke-dashoffset:1;
+  filter:drop-shadow(0 0 4px rgba(255,90,114,.9));
+  animation:rotaPulso 3.4s linear infinite;
+  animation-delay:var(--atraso,0s);
+}
+@keyframes rotaPulso{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+
+.cob__rotas g.apaga{opacity:.12}
+.cob__rotas g{transition:opacity .35s var(--e)}
+
+/* --- pinos --- */
+.cob__pinos .halo{
+  fill:url(#halo);
+  transform-origin:center;transform-box:fill-box;
+  animation:haloPulsa 2.8s var(--e) infinite;
+  animation-delay:var(--atraso,0s);
+}
+@keyframes haloPulsa{
+  0%,100%{transform:scale(.55);opacity:.85}
+  50%    {transform:scale(1);opacity:.25}
+}
+.cob__pinos .ponto{fill:#fff;stroke:var(--red);stroke-width:3}
+.cob__pinos .matriz .ponto{fill:var(--red);stroke:#fff;stroke-width:3.4}
+
+/* no celular o mapa é pequeno: siglas e pontos crescem para continuar legíveis */
+@media (max-width:700px){
+  .cob__pinos text{font-size:40px;stroke-width:7px}
+  .cob__pinos .ponto{r:9}
+  .cob__pinos .matriz .ponto{r:12}
+  .cob__rotas .rota{stroke-width:3}
+  .cob__rotas .rota-pulso{stroke-width:4.5}
+}
 
 /* filtro por região: o que está fora do filtro recua */
 .cob__ufs .uf.apaga{opacity:.28}
 .cob__ufs .uf.on.destaca{fill:#ff2d4d;stroke:#fff;stroke-width:2.4}
 
-/* pinos */
-.cob__pinos circle{
-  fill:#fff;stroke:var(--red);stroke-width:3;
-  transition:opacity .3s var(--e), r .3s var(--e);
-}
 .cob__pinos text{
   font-family:var(--ff);font-weight:800;font-size:23px;
   fill:#fff;text-anchor:middle;

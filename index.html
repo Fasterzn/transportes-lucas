@@ -498,15 +498,23 @@
             Santa Catarina, Rio Grande do Sul, Mato Grosso, Mato Grosso do Sul, Bahia e Pernambuco.
             Os demais estados aparecem hachurados como fora da área de atuação.</desc>
           <defs>
-            <pattern id="hachura" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <rect width="8" height="8" fill="#1b1f27"/>
-              <line x1="0" y1="0" x2="0" y2="8" stroke="#2c323d" stroke-width="2.5"/>
+            <!-- hachura dos estados fora da área de atuação -->
+            <pattern id="hachura" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="9" height="9" fill="#10141c"/>
+              <rect width="2.2" height="9" fill="rgba(255,255,255,.07)"/>
             </pattern>
-            <filter id="brilhoUf" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="7" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
+            <!-- preenchimento dos estados atendidos -->
+            <linearGradient id="grad-on" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#e01634"/>
+              <stop offset="1" stop-color="#8f0a20"/>
+            </linearGradient>
+            <!-- halo luminoso dos pinos -->
+            <radialGradient id="halo">
+              <stop offset="0" stop-color="#ff2d4d" stop-opacity=".55"/>
+              <stop offset="1" stop-color="#ff2d4d" stop-opacity="0"/>
+            </radialGradient>
           </defs>
+
           <g class="cob__ufs">
       <path id="uf-AC" class="uf" data-uf="AC" data-nome="Acre" d="M17.0 313.4L39.5 323.8L93.7 336.4L132.5 357.5L182.2 380.4L172.2 388.7L163.7 391.1L156.6 399.3L148.4 398.4L144.1 405.4L136.9 409.1L132.8 410.0L131.8 406.5L116.0 404.7L103.9 404.5L95.0 408.2L89.8 404.9L87.7 406.4L87.7 377.6L89.7 376.2L88.2 371.1L90.7 367.9L73.7 381.1L50.8 382.0L51.5 377.0L48.7 375.8L46.6 369.6L26.3 367.5L31.3 362.6L32.9 357.2L24.6 348.0L24.8 344.6L18.7 341.4L16.5 333.5L13.2 330.7L15.3 327.5L8.1 322.1L8.7 317.0L14.9 316.0L12.4 311.2L17.0 313.4Z"/>
       <path id="uf-AL" class="uf" data-uf="AL" data-nome="Alagoas" d="M919.3 353.2L926.7 355.3L897.4 394.2L893.3 392.2L891.9 388.3L885.1 385.3L883.2 381.4L864.4 373.1L853.7 365.5L865.0 354.0L866.5 357.3L871.4 356.6L884.1 366.8L886.1 364.0L892.3 365.8L901.3 361.7L900.3 360.0L905.1 355.4L919.3 353.2Z"/>
@@ -536,6 +544,8 @@
       <path id="uf-SP" class="uf" data-uf="SP" data-nome="São Paulo" d="M666.8 721.4L665.8 724.6L663.3 725.9L661.0 724.1L647.8 731.7L646.2 734.9L626.5 748.7L620.4 756.9L622.2 754.9L618.4 754.2L616.8 748.8L614.9 751.0L613.1 748.8L610.3 751.8L609.0 750.5L611.0 742.9L609.0 741.2L591.9 741.3L594.4 733.2L584.7 721.2L585.7 710.8L583.1 704.3L577.6 701.6L575.8 697.8L557.9 699.4L554.4 695.3L545.6 692.2L534.8 692.2L525.6 688.5L522.9 692.3L514.3 689.7L505.2 689.8L502.4 691.9L502.0 690.4L518.5 679.3L526.4 668.8L526.3 663.9L531.3 659.9L531.1 654.7L537.2 649.7L537.9 642.4L543.7 635.6L550.2 633.0L552.6 627.7L561.9 622.3L592.9 625.9L593.5 633.9L599.3 630.9L601.5 637.6L603.3 630.8L617.0 630.3L617.1 627.6L620.1 630.4L623.4 627.7L625.3 629.9L626.1 626.7L631.4 628.0L635.2 625.9L641.0 632.2L639.5 637.8L644.2 643.0L640.8 648.5L646.2 661.7L654.4 660.2L658.1 662.8L653.8 671.8L655.6 676.1L653.0 677.7L655.9 679.1L653.0 683.3L660.5 689.1L658.8 692.9L662.2 694.4L661.6 697.8L675.0 696.8L676.9 695.8L674.4 693.5L676.8 690.0L684.3 691.8L698.3 685.7L702.4 690.7L708.3 689.9L713.6 692.3L711.0 696.1L698.7 699.9L696.4 705.8L700.3 709.3L695.9 708.5L691.8 713.1L684.1 715.6L684.2 720.4L673.8 718.9L666.8 721.4ZM686.1 722.7L682.8 722.1L686.0 718.0L688.3 719.3L688.4 723.4L686.1 722.7Z"/>
       <path id="uf-TO" class="uf" data-uf="TO" data-nome="Tocantins" d="M645.7 357.0L644.8 359.0L648.3 359.1L652.0 367.5L656.8 369.3L654.8 375.4L658.4 377.7L661.4 386.1L675.0 388.5L677.2 386.0L674.2 392.6L665.1 397.9L663.4 404.2L655.5 413.5L658.8 419.1L668.0 421.7L662.6 421.9L661.2 427.7L666.0 428.5L660.7 431.9L661.8 439.2L664.1 443.0L666.5 442.8L663.5 445.3L662.9 454.2L667.3 453.6L661.5 455.2L660.2 451.1L659.3 454.7L652.3 454.7L636.3 462.5L631.4 458.0L630.4 466.9L627.0 463.1L621.3 461.2L618.9 462.9L618.7 459.0L612.3 462.6L610.8 458.6L608.9 463.2L608.5 456.9L602.5 450.7L599.7 454.4L596.3 450.3L593.5 452.6L590.4 462.1L568.6 451.5L572.1 440.6L566.8 444.3L563.4 452.0L560.8 451.0L558.8 445.9L560.9 441.4L558.4 424.6L560.0 421.2L557.9 417.6L561.1 408.1L561.2 398.1L574.6 364.6L592.4 342.3L595.6 328.1L590.1 321.8L594.8 314.2L594.2 306.7L607.1 300.2L610.8 292.7L613.7 293.3L612.6 288.3L617.3 282.7L615.8 278.0L619.7 274.7L613.7 269.2L605.2 268.6L610.5 264.2L624.4 265.4L626.5 268.7L634.6 272.4L637.5 290.6L633.9 307.9L628.8 313.4L634.6 315.7L632.5 319.3L634.5 319.2L645.4 334.3L655.8 330.4L658.8 333.3L658.1 339.6L651.0 342.7L645.7 357.0Z"/>
           </g>
+          <!-- rotas saindo da matriz; desenhadas por cima dos estados -->
+          <g class="cob__rotas" id="mapaRotas" fill="none" pointer-events="none" aria-hidden="true"></g>
           <g class="cob__pinos" id="mapaPinos" aria-hidden="true"></g>
         </svg>
 

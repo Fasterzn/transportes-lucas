@@ -145,6 +145,24 @@
     SP: [632, 696], MG: [698, 589], RJ: [736, 688], PR: [547, 752], SC: [557, 805],
     RS: [499, 877], MT: [422, 492], MS: [448, 635], BA: [768, 460], PE: [865, 341]
   };
+  var MATRIZ = 'SP';   // de onde as rotas saem
+
+  function svgEl(nome) {
+    return document.createElementNS('http://www.w3.org/2000/svg', nome);
+  }
+
+  // Curva suave de A até B, arqueada para o lado — dá a sensação de rota
+  // em vez de linha reta ligando pontos.
+  function curva(a, b) {
+    var mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+    var dx = b[0] - a[0], dy = b[1] - a[1];
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var k = dist * 0.18;                       // quanto a rota "abre"
+    var cx = mx - (dy / dist) * k;
+    var cy = my + (dx / dist) * k;
+    return 'M' + a[0] + ' ' + a[1] + 'Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) +
+           ' ' + b[0] + ' ' + b[1];
+  }
 
   function montarCobertura() {
     var svg = $('#mapaBrasil');
@@ -152,6 +170,7 @@
 
     var lista = $('#listaUfs');
     var pinos = $('#mapaPinos');
+    var rotas = $('#mapaRotas');
     var chips = $('#cobChips');
     var balao = $('#cobBalao');
     var painel = $('.cob__painel');
@@ -168,23 +187,60 @@
       if (regioesAtendidas.indexOf(e.regiao) < 0) regioesAtendidas.push(e.regiao);
     });
 
-    /* ---------- pinta o mapa e monta a lista ---------- */
-    estados.forEach(function (e) {
+    /* ---------- pinta o mapa, desenha rotas e pinos ---------- */
+    estados.forEach(function (e, i) {
       var path = svg.querySelector('#uf-' + e.uf);
       if (!path) { console.warn('[TL] estado sem path no mapa: ' + e.uf); return; }
       path.classList.add('on');
       path.dataset.regiao = e.regiao;
 
       var c = CENTROS[e.uf];
+      var atraso = (i * 0.22).toFixed(2) + 's';
+
+      // rota da matriz até este estado
+      if (c && rotas && e.uf !== MATRIZ && CENTROS[MATRIZ]) {
+        var d = curva(CENTROS[MATRIZ], c);
+        var gr = svgEl('g');
+        gr.dataset.uf = e.uf;
+        gr.dataset.regiao = e.regiao;
+        gr.style.setProperty('--atraso', atraso);
+        ['rota', 'rota-pulso'].forEach(function (cls) {
+          var l = svgEl('path');
+          l.setAttribute('class', cls);
+          l.setAttribute('d', d);
+          l.setAttribute('pathLength', '1');
+          gr.appendChild(l);
+        });
+        rotas.appendChild(gr);
+      }
+
       if (c && pinos) {
-        var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        var g = svgEl('g');
         g.dataset.uf = e.uf;
         g.dataset.regiao = e.regiao;
-        var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        if (e.uf === MATRIZ) g.setAttribute('class', 'matriz');
+        g.style.setProperty('--atraso', atraso);
+
+        var halo = svgEl('circle');
+        halo.setAttribute('class', 'halo');
+        halo.setAttribute('cx', c[0]);
+        halo.setAttribute('cy', c[1]);
+        halo.setAttribute('r', e.uf === MATRIZ ? 34 : 26);
+        g.appendChild(halo);
+
+        var ponto = svgEl('circle');
+        ponto.setAttribute('class', 'ponto');
+        ponto.setAttribute('cx', c[0]);
+        ponto.setAttribute('cy', c[1]);
+        ponto.setAttribute('r', e.uf === MATRIZ ? 8 : 6);
+        g.appendChild(ponto);
+
+        var t = svgEl('text');
         t.setAttribute('x', c[0]);
-        t.setAttribute('y', c[1] + 8);
+        t.setAttribute('y', c[1] - 14);
         t.textContent = e.uf;
         g.appendChild(t);
+
         pinos.appendChild(g);
       }
 
@@ -234,6 +290,12 @@
       $$('g[data-uf]', pinos).forEach(function (g) {
         g.classList.toggle('apaga', !(!filtro || g.dataset.regiao === filtro));
       });
+      if (rotas) {
+        $$('g[data-uf]', rotas).forEach(function (g) {
+          // a rota só fica acesa se o destino estiver no filtro
+          g.classList.toggle('apaga', !(!filtro || g.dataset.regiao === filtro));
+        });
+      }
       if (lista) {
         $$('.uf-item', lista).forEach(function (i) {
           i.classList.toggle('apaga', !(!filtro || i.dataset.regiao === filtro));
