@@ -586,21 +586,66 @@
   /* ===================================================================
      ANIMAÇÕES DE ENTRADA
      =================================================================== */
-  function revelar() {
-    var alvos = $$('.anim');
+  /* Imagens e cards que sobem ao rolar, um atrás do outro.
+     O pai perde o .anim para o bloco inteiro não se mover junto com os
+     filhos — senão o movimento fica dobrado. */
+  // porPai: o grupo é revelado quando o PAI entra na tela, não cada filho.
+  // Necessário no carrossel, onde os cards de fora da área visível nunca
+  // cruzariam a janela e ficariam presos invisíveis.
+  var GRUPOS = [
+    { pai: '.sobre__foto',      filhos: 'img' },
+    { pai: '.carro__trilho',    filhos: '.serv', porPai: true },
+    { pai: '.sols',             filhos: '.sol' },
+    { pai: '.segs',             filhos: '.seg' },
+    { pai: '.frota__grade',     filhos: '.frota__palco, .fcard' },
+    { pai: '.operacao__grade',  filhos: '.reel' },
+    { pai: '.cob',              filhos: '.cob__painel' },
+    { pai: '.nums',             filhos: '.num' },
+    { pai: '.unis',             filhos: '.uni' },
+  ];
 
-    if (SEM_MOVIMENTO || !('IntersectionObserver' in window)) {
-      alvos.forEach(function (el) { el.classList.remove('anim'); });
+  // grupos cujo gatilho é o pai: [{ pai, filhos }]
+  var gatilhos = [];
+
+  function prepararSubida() {
+    gatilhos = [];
+    GRUPOS.forEach(function (g) {
+      var pai = $(g.pai);
+      if (!pai) return;
+      var filhos = $$(g.filhos, pai);
+      if (!filhos.length) return;
+      pai.classList.remove('anim', 'vis');
+      filhos.forEach(function (el, i) {
+        el.classList.add('sobe');
+        el.style.setProperty('--i', i);
+      });
+      if (g.porPai) gatilhos.push({ pai: pai, filhos: filhos });
+    });
+  }
+
+  function revelar() {
+    prepararSubida();
+
+    // filhos de grupo com gatilho no pai saem da observação individual
+    var porPai = [];
+    gatilhos.forEach(function (g) { porPai = porPai.concat(g.filhos); });
+    var alvos = $$('.anim, .sobe').filter(function (el) { return porPai.indexOf(el) < 0; });
+
+    // As entradas ao rolar rodam mesmo com "animações" desligadas no sistema:
+    // é uma transição curta, de deslocamento pequeno, que acontece uma vez.
+    if (!('IntersectionObserver' in window)) {
+      $$('.anim, .sobe').forEach(function (el) { el.classList.remove('anim', 'sobe'); });
       return;
     }
 
-    // Depois que a transição termina, tiramos .anim/.vis do elemento.
+    // Depois que a transição termina, tiramos as classes do elemento.
     // Sem opacity nem transform ele sai da camada composta do Chrome e volta
     // ao antialiasing subpixel — é o que mantém o texto nítido.
     function limpar(el) {
-      el.classList.remove('anim', 'vis');
+      el.classList.remove('anim', 'sobe', 'vis');
       el.style.removeProperty('opacity');
       el.style.removeProperty('transform');
+      el.style.removeProperty('--i');
     }
 
     var obs = new IntersectionObserver(function (ens, o) {
@@ -618,11 +663,30 @@
           limpar(el);
         };
         el.addEventListener('transitionend', fim);
-        // rede de segurança caso o transitionend não dispare (aba em segundo plano)
-        setTimeout(fim, 1100);
+        // rede de segurança caso o transitionend não dispare (aba em segundo
+        // plano). O prazo acompanha o atraso escalonado do elemento.
+        var i = parseInt(el.style.getPropertyValue('--i'), 10) || 0;
+        setTimeout(fim, 1000 + i * 95 + 400);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
     alvos.forEach(function (el) { obs.observe(el); });
+
+    // grupos revelados de uma vez, quando o pai aparece
+    if (gatilhos.length) {
+      var obsPai = new IntersectionObserver(function (ens, o) {
+        ens.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          o.unobserve(en.target);
+          var g = gatilhos.filter(function (x) { return x.pai === en.target; })[0];
+          if (!g) return;
+          g.filhos.forEach(function (el, i) {
+            el.classList.add('vis');
+            setTimeout(function () { limpar(el); }, 1000 + i * 95 + 400);
+          });
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: .05 });
+      gatilhos.forEach(function (g) { obsPai.observe(g.pai); });
+    }
   }
 
   /* ===================================================================

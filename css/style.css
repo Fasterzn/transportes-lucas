@@ -242,6 +242,16 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 }
 .js .anim.vis{opacity:1;transform:none}
 
+/* Imagens e cards sobem ao entrar na tela, um depois do outro.
+   O índice --i escalona o atraso dentro de cada grupo. */
+.js .sobe{
+  opacity:0;
+  transform:translateY(52px) scale(.985);
+  transition:opacity .8s var(--e), transform .8s var(--e);
+  transition-delay:calc(var(--i,0) * 95ms);
+}
+.js .sobe.vis{opacity:1;transform:none}
+
 /* contatos essenciais quando o JS está desligado */
 .semjs{
   display:grid;gap:6px;
@@ -1464,20 +1474,16 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 /* ---------------------------------------------------------------
    18. PREFERÊNCIAS DO USUÁRIO / IMPRESSÃO
    --------------------------------------------------------------- */
+/* O cliente pediu o site animado mesmo com "Efeitos de animação" desligado
+   no Windows, porque é essa a configuração da máquina dele. Então aqui NÃO
+   desligamos as entradas ao rolar, as subidas de imagem nem as animações do
+   mapa — elas são curtas, de deslocamento pequeno e disparam uma vez.
+   O que continua respeitando a preferência:
+     • a rolagem suave dos links do menu (vira salto direto)
+     • o vídeo de drone do meio da página, que é laço contínuo (js/main.js) */
 @media (prefers-reduced-motion:reduce){
   html:focus-within{scroll-behavior:auto}
-  *,*::before,*::after{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
-    scroll-behavior:auto !important;
-  }
-  .js .anim{opacity:1;transform:none}
-  /* O vídeo do banner NÃO é escondido aqui. Ele fica visível e parado no
-     poster, e o botão de play deixa o visitante iniciá-lo quando quiser —
-     o que é inadequado com "animações desligadas" é dar play sozinho,
-     não a presença do vídeo. Quem cuida de não tocar é o js/main.js. */
-  .serv:hover,.info:hover,.btn:hover,.redes a:hover,.seg:hover .seg__ic{transform:none}
+  html{scroll-behavior:auto}
 }
 
 @media print{
