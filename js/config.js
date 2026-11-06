@@ -39,7 +39,7 @@ window.TL = {
   /* ---------- Mensagens pré-preenchidas do WhatsApp ---------- */
   mensagens: {
     padrao: 'Olá! Vim pelo site e gostaria de um orçamento de frete.',
-    botaoFlutuante: 'Olá! Vim pelo site da Transportes Lucas e gostaria de falar sobre um frete.',
+    botaoFlutuante: 'Olá! Vim pelo site da Transportes Lucas. Gostaria de um orçamento de frete — posso passar a origem, o destino e o tipo de carga?',
   },
 
   /* ---------- Unidades ---------- */
@@ -76,19 +76,42 @@ window.TL = {
   },
 
   /* ---------- Cobertura ---------- */
-  // Estados atendidos. Alterar aqui pinta/despinta o mapa e a lista.
+  // Estados atendidos. Alterar aqui pinta/despinta o mapa, monta os filtros
+  // por região, atualiza o contador e a lista — tudo de uma vez.
   estados: [
-    { uf: 'SP', nome: 'São Paulo' },
-    { uf: 'MG', nome: 'Minas Gerais' },
-    { uf: 'RJ', nome: 'Rio de Janeiro' },
-    { uf: 'PR', nome: 'Paraná' },
-    { uf: 'SC', nome: 'Santa Catarina' },
-    { uf: 'RS', nome: 'Rio Grande do Sul' },
-    { uf: 'MT', nome: 'Mato Grosso' },
-    { uf: 'MS', nome: 'Mato Grosso do Sul' },
-    { uf: 'BA', nome: 'Bahia' },
-    { uf: 'PE', nome: 'Pernambuco' },
+    { uf: 'SP', nome: 'São Paulo',        regiao: 'Sudeste' },
+    { uf: 'MG', nome: 'Minas Gerais',     regiao: 'Sudeste' },
+    { uf: 'RJ', nome: 'Rio de Janeiro',   regiao: 'Sudeste' },
+    { uf: 'PR', nome: 'Paraná',           regiao: 'Sul' },
+    { uf: 'SC', nome: 'Santa Catarina',   regiao: 'Sul' },
+    { uf: 'RS', nome: 'Rio Grande do Sul', regiao: 'Sul' },
+    { uf: 'MT', nome: 'Mato Grosso',      regiao: 'Centro-Oeste' },
+    { uf: 'MS', nome: 'Mato Grosso do Sul', regiao: 'Centro-Oeste' },
+    { uf: 'BA', nome: 'Bahia',            regiao: 'Nordeste' },
+    { uf: 'PE', nome: 'Pernambuco',       regiao: 'Nordeste' },
   ],
+
+  // Ordem dos filtros do mapa. "Norte" aparece marcado como não atendido.
+  regioes: ['Sudeste', 'Sul', 'Centro-Oeste', 'Nordeste', 'Norte'],
+
+  // Nome e região de todas as 27 UFs — usado no balão do mapa quando o
+  // visitante passa por um estado fora da área de atuação.
+  ufs: {
+    AC: ['Acre', 'Norte'],            AL: ['Alagoas', 'Nordeste'],
+    AM: ['Amazonas', 'Norte'],        AP: ['Amapá', 'Norte'],
+    BA: ['Bahia', 'Nordeste'],        CE: ['Ceará', 'Nordeste'],
+    DF: ['Distrito Federal', 'Centro-Oeste'], ES: ['Espírito Santo', 'Sudeste'],
+    GO: ['Goiás', 'Centro-Oeste'],    MA: ['Maranhão', 'Nordeste'],
+    MG: ['Minas Gerais', 'Sudeste'],  MS: ['Mato Grosso do Sul', 'Centro-Oeste'],
+    MT: ['Mato Grosso', 'Centro-Oeste'], PA: ['Pará', 'Norte'],
+    PB: ['Paraíba', 'Nordeste'],      PE: ['Pernambuco', 'Nordeste'],
+    PI: ['Piauí', 'Nordeste'],        PR: ['Paraná', 'Sul'],
+    RJ: ['Rio de Janeiro', 'Sudeste'], RN: ['Rio Grande do Norte', 'Nordeste'],
+    RO: ['Rondônia', 'Norte'],        RR: ['Roraima', 'Norte'],
+    RS: ['Rio Grande do Sul', 'Sul'], SC: ['Santa Catarina', 'Sul'],
+    SE: ['Sergipe', 'Nordeste'],      SP: ['São Paulo', 'Sudeste'],
+    TO: ['Tocantins', 'Norte'],
+  },
 
   /* ---------- Números da faixa "Nossa estrutura" ----------
      ⚠️ CONFIRMAR ANTES DE PUBLICAR. Os dois primeiros vieram do layout que

@@ -590,7 +590,148 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 }
 .sobre__reg strong{color:var(--navy)}
 
-/* mapa */
+/* ---------------------------------------------------------------
+   8b. ÁREA DE ATUAÇÃO — mapa interativo
+   --------------------------------------------------------------- */
+.cob{display:grid;gap:clamp(30px,3.6vw,56px);align-items:center}
+
+/* painel escuro com grade ao fundo */
+.cob__painel{
+  position:relative;margin:0;
+  border-radius:var(--r-lg);
+  padding:clamp(14px,2vw,26px);
+  background:
+    linear-gradient(rgba(211,18,47,.05),rgba(211,18,47,.05)),
+    repeating-linear-gradient(0deg,transparent 0 39px,rgba(255,255,255,.045) 39px 40px),
+    repeating-linear-gradient(90deg,transparent 0 39px,rgba(255,255,255,.045) 39px 40px),
+    var(--ink2);
+  border:1px solid var(--line-esc);
+}
+.cob__svg{width:100%;height:auto;overflow:visible}
+
+/* estado fora da área: hachurado */
+.cob__ufs .uf{
+  fill:url(#hachura);
+  stroke:#39404c;stroke-width:1.4;
+  transition:fill .35s var(--e), stroke .35s var(--e), opacity .35s var(--e);
+}
+/* estado atendido */
+.cob__ufs .uf.on{
+  fill:#c01029;stroke:#ff5a72;stroke-width:1.6;cursor:pointer;
+}
+.cob__ufs .uf.on:hover,
+.cob__ufs .uf.on.realce{fill:var(--red);stroke:#fff;stroke-width:2.2}
+
+/* filtro por região: o que está fora do filtro recua */
+.cob__ufs .uf.apaga{opacity:.28}
+.cob__ufs .uf.on.destaca{fill:#ff2d4d;stroke:#fff;stroke-width:2.4}
+
+/* pinos */
+.cob__pinos circle{
+  fill:#fff;stroke:var(--red);stroke-width:3;
+  transition:opacity .3s var(--e), r .3s var(--e);
+}
+.cob__pinos text{
+  font-family:var(--ff);font-weight:800;font-size:23px;
+  fill:#fff;text-anchor:middle;
+  paint-order:stroke;stroke:rgba(10,11,14,.75);stroke-width:5px;stroke-linejoin:round;
+  pointer-events:none;
+  transition:opacity .3s var(--e);
+}
+.cob__pinos .apaga{opacity:.25}
+
+/* balão que segue o cursor */
+.cob__balao{
+  position:absolute;z-index:4;pointer-events:none;
+  transform:translate(-50%,-130%);
+  background:rgba(10,11,14,.94);
+  border:1px solid var(--line-esc);
+  border-radius:var(--r);
+  padding:9px 14px;
+  white-space:nowrap;
+  box-shadow:0 10px 26px rgba(0,0,0,.5);
+  animation:balaoEntra .18s var(--e);
+}
+@keyframes balaoEntra{from{opacity:0;transform:translate(-50%,-118%)}to{opacity:1}}
+.cob__balao[hidden]{display:none}
+.cob__balao b{display:block;font-size:.98rem;color:#fff;font-weight:800;line-height:1.2}
+.cob__balao span{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.76rem;margin-top:4px;color:var(--mut-esc);
+}
+.cob__balao span::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--mut-esc);
+}
+.cob__balao.ok span{color:#ff8094}
+.cob__balao.ok span::before{background:var(--red)}
+
+.cob__leg{
+  display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:center;
+  margin-top:14px;font-size:.8rem;color:var(--mut-esc);
+}
+.cob__leg span{display:inline-flex;align-items:center;gap:8px}
+.cob__leg em{font-style:normal;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.cob__amostra{width:13px;height:13px;border-radius:3px;display:inline-block}
+.cob__amostra--on{background:var(--red);box-shadow:0 0 0 1px #ff5a72}
+.cob__amostra--off{
+  background:repeating-linear-gradient(45deg,#1b1f27 0 3px,#2c323d 3px 5px);
+  box-shadow:0 0 0 1px #39404c;
+}
+
+/* --- coluna de controles --- */
+.cob__lado .cab__olho{color:var(--red)}
+
+.cob__chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--mut-esc);
+  background:transparent;
+  border:1px solid var(--line-esc);
+  border-radius:var(--r-pill);
+  padding:9px 17px;
+  transition:background .25s var(--e), color .25s var(--e),
+             border-color .25s var(--e), transform .2s var(--e);
+}
+.chip:hover{color:#fff;border-color:#49505d;transform:translateY(-2px)}
+.chip[aria-selected="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.chip__tag{
+  font-size:.62rem;letter-spacing:.08em;
+  background:rgba(255,255,255,.12);
+  padding:3px 7px;border-radius:4px;
+}
+.chip--fora[aria-selected="true"]{background:#2c323d;border-color:#49505d;color:#fff}
+
+.cob__resumo{
+  margin:0 0 20px;padding-left:16px;
+  border-left:3px solid var(--red);
+  color:var(--mut-esc);font-size:1rem;line-height:1.5;
+}
+.cob__resumo strong{display:block;color:#fff;font-size:1.3rem;font-weight:800}
+.cob__resumo strong span{font-variant-numeric:tabular-nums}
+
+.cob__ufs-lista{
+  display:grid;gap:7px;
+  grid-template-columns:repeat(auto-fill,minmax(146px,1fr));
+  margin-bottom:26px;
+}
+.uf-item{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 10px;border-radius:var(--r-sm);
+  font-size:.88rem;
+  transition:background .2s var(--e), opacity .25s var(--e);
+}
+.uf-item:hover,.uf-item.ativo{background:var(--ink3)}
+.uf-item.apaga{opacity:.3}
+.uf-item__sig{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:23px;flex:none;
+  background:var(--red);color:#fff;border-radius:4px;
+  font-weight:800;font-size:.74rem;
+}
+.uf-item__nome{color:var(--mut-esc);line-height:1.2}
+
+/* mapa (estilo antigo mantido para o caso de reuso) */
 .mapa{margin:0}
 /* sem drop-shadow: o filtro joga o SVG numa camada composta e borra
    as siglas dos estados */
@@ -1222,7 +1363,20 @@ section[id]{scroll-margin-top:calc(var(--topo-h) + 10px)}
 
   /* sobre — a foto ganha mais largura que o texto de abertura */
   .sobre__topo{grid-template-columns:1.18fr .82fr;align-items:center}
-  .sobre__baixo{grid-template-columns:1fr 1fr}
+  /* o mapa saiu daqui; o texto e os diferenciais dividem a largura */
+  .sobre__baixo{grid-template-columns:1fr}
+  .sobre__txt{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:0 clamp(36px,4vw,64px);align-items:start;
+  }
+  .sobre__txt > .sobre__h3{grid-column:1/-1}
+  .sobre__txt > .difs{
+    grid-column:2;grid-row:2/span 3;
+    margin-top:0;padding-top:0;border-top:0;align-content:start;
+  }
+
+  /* área de atuação: mapa à esquerda, filtros à direita */
+  .cob{grid-template-columns:1.1fr .9fr;gap:clamp(34px,4vw,64px)}
 
   /* segmentos */
   .segs{grid-template-columns:repeat(6,1fr);gap:16px}

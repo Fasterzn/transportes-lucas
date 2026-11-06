@@ -188,6 +188,7 @@
       <ul class="menu__lista">
         <li><a href="#inicio">Home</a></li>
         <li><a href="#sobre">Sobre Nós</a></li>
+        <li><a href="#cobertura">Cobertura</a></li>
         <li><a href="#frota">Frota</a></li>
         <li><a href="#servicos">Serviços</a></li>
         <li><a href="#segmentos">Segmentos</a></li>
@@ -465,14 +466,48 @@
         </ul>
       </div>
 
-      <div class="sobre__mapa anim" id="cobertura">
-        <figure class="mapa">
-          <svg class="mapa__svg" viewBox="0 0 1000 972" role="img"
-               aria-labelledby="mapaTitulo mapaDesc" id="mapaBrasil">
-            <title id="mapaTitulo">Mapa do Brasil com os estados atendidos pela Transportes Lucas</title>
-            <desc id="mapaDesc">Estados destacados em vermelho: São Paulo, Minas Gerais, Rio de Janeiro,
-              Paraná, Santa Catarina, Rio Grande do Sul, Mato Grosso, Mato Grosso do Sul, Bahia e Pernambuco.</desc>
-            <g class="mapa__ufs">
+    </div>
+
+    <p class="sobre__reg anim">
+      <strong>Transportes Lucas Ltda</strong> · CNPJ 11.091.193/0001-50 · RNTRC 012613874
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ================================================================
+     ÁREA DE ATUAÇÃO — mapa interativo
+     ================================================================ -->
+<section class="secao secao--escuro cobertura" id="cobertura">
+  <div class="wrap">
+
+    <h2 class="tit tit--claro anim"><span>Área de</span><strong>Atuação</strong></h2>
+    <p class="tit__sub anim">
+      Quatro regiões, uma operação conectada. Toque num estado para ver a situação
+      ou filtre pela região que te interessa.
+    </p>
+
+    <div class="cob anim">
+
+      <figure class="cob__painel">
+        <svg class="cob__svg" viewBox="0 0 1000 972" id="mapaBrasil"
+             role="img" aria-labelledby="mapaTitulo mapaDesc">
+          <title id="mapaTitulo">Mapa do Brasil com a área de atuação da Transportes Lucas</title>
+          <desc id="mapaDesc">Estados atendidos: São Paulo, Minas Gerais, Rio de Janeiro, Paraná,
+            Santa Catarina, Rio Grande do Sul, Mato Grosso, Mato Grosso do Sul, Bahia e Pernambuco.
+            Os demais estados aparecem hachurados como fora da área de atuação.</desc>
+          <defs>
+            <pattern id="hachura" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="8" height="8" fill="#1b1f27"/>
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#2c323d" stroke-width="2.5"/>
+            </pattern>
+            <filter id="brilhoUf" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g class="cob__ufs">
       <path id="uf-AC" class="uf" data-uf="AC" data-nome="Acre" d="M17.0 313.4L39.5 323.8L93.7 336.4L132.5 357.5L182.2 380.4L172.2 388.7L163.7 391.1L156.6 399.3L148.4 398.4L144.1 405.4L136.9 409.1L132.8 410.0L131.8 406.5L116.0 404.7L103.9 404.5L95.0 408.2L89.8 404.9L87.7 406.4L87.7 377.6L89.7 376.2L88.2 371.1L90.7 367.9L73.7 381.1L50.8 382.0L51.5 377.0L48.7 375.8L46.6 369.6L26.3 367.5L31.3 362.6L32.9 357.2L24.6 348.0L24.8 344.6L18.7 341.4L16.5 333.5L13.2 330.7L15.3 327.5L8.1 322.1L8.7 317.0L14.9 316.0L12.4 311.2L17.0 313.4Z"/>
       <path id="uf-AL" class="uf" data-uf="AL" data-nome="Alagoas" d="M919.3 353.2L926.7 355.3L897.4 394.2L893.3 392.2L891.9 388.3L885.1 385.3L883.2 381.4L864.4 373.1L853.7 365.5L865.0 354.0L866.5 357.3L871.4 356.6L884.1 366.8L886.1 364.0L892.3 365.8L901.3 361.7L900.3 360.0L905.1 355.4L919.3 353.2Z"/>
       <path id="uf-AM" class="uf" data-uf="AM" data-nome="Amazonas" d="M165.6 87.4L171.1 94.6L171.3 108.5L176.7 106.9L189.5 118.6L194.9 118.5L199.9 114.2L206.8 112.4L209.0 115.5L206.7 119.4L207.9 121.2L212.9 114.3L216.4 114.5L218.2 108.7L220.1 109.8L225.2 104.9L226.7 107.1L234.9 99.7L236.3 103.7L242.1 97.5L244.4 88.6L252.2 87.7L259.2 82.9L264.6 83.9L267.4 87.7L274.9 89.6L272.6 98.1L276.6 102.0L281.1 113.1L279.0 124.6L287.2 145.2L284.8 152.9L279.6 155.7L290.7 164.5L294.1 171.2L300.3 172.2L304.1 175.7L300.6 171.2L301.4 160.0L304.3 153.4L310.2 149.3L317.2 150.7L323.1 159.0L331.6 154.8L329.5 149.6L338.0 130.6L365.1 130.6L365.6 145.5L369.0 147.7L369.6 153.7L375.9 158.7L378.6 165.1L382.4 167.2L385.8 164.2L387.2 171.4L400.6 179.3L406.0 179.2L409.0 183.9L416.2 186.6L415.4 190.1L417.5 191.3L431.2 186.7L422.5 196.4L424.0 197.2L380.0 295.5L374.9 301.1L383.0 317.2L377.2 329.0L379.5 336.1L376.4 345.0L375.9 350.2L378.5 350.6L376.9 352.1L301.5 352.5L298.4 349.8L292.0 354.5L288.7 352.6L287.2 347.4L283.7 347.9L282.9 342.5L279.2 342.4L271.6 332.6L253.3 332.2L249.7 340.8L245.6 341.1L246.1 347.1L241.2 350.7L240.8 356.5L224.5 357.3L218.4 368.1L214.8 363.8L210.1 365.2L210.4 368.9L206.6 367.6L201.9 371.8L197.7 367.6L187.3 367.4L185.2 373.0L177.9 377.4L132.5 357.5L93.7 336.4L39.5 323.8L12.4 311.2L16.2 302.7L28.2 296.2L25.8 284.8L32.3 275.5L35.8 262.2L57.8 247.7L80.1 244.5L86.9 238.1L87.6 239.7L94.7 238.6L97.7 244.0L99.8 241.5L101.4 243.7L103.2 242.4L116.7 164.8L111.2 155.4L111.5 149.5L101.0 141.6L101.4 123.4L111.7 121.7L114.7 119.1L117.6 122.1L123.3 121.2L119.8 111.0L106.1 110.5L106.1 94.9L113.0 93.2L146.0 94.7L143.4 92.3L144.8 89.0L151.1 92.2L163.7 82.1L165.6 87.4Z"/>
@@ -500,18 +535,38 @@
       <path id="uf-SE" class="uf" data-uf="SE" data-nome="Sergipe" d="M860.3 370.5L883.2 381.4L885.1 385.3L891.9 388.3L893.3 392.2L897.3 394.2L886.4 400.2L875.2 417.3L870.7 419.9L866.4 420.2L859.9 416.1L859.9 411.2L853.6 403.4L854.3 399.3L859.3 400.7L863.7 398.9L862.7 392.4L865.6 390.1L863.3 382.0L859.4 379.9L858.4 371.5L860.3 370.5Z"/>
       <path id="uf-SP" class="uf" data-uf="SP" data-nome="São Paulo" d="M666.8 721.4L665.8 724.6L663.3 725.9L661.0 724.1L647.8 731.7L646.2 734.9L626.5 748.7L620.4 756.9L622.2 754.9L618.4 754.2L616.8 748.8L614.9 751.0L613.1 748.8L610.3 751.8L609.0 750.5L611.0 742.9L609.0 741.2L591.9 741.3L594.4 733.2L584.7 721.2L585.7 710.8L583.1 704.3L577.6 701.6L575.8 697.8L557.9 699.4L554.4 695.3L545.6 692.2L534.8 692.2L525.6 688.5L522.9 692.3L514.3 689.7L505.2 689.8L502.4 691.9L502.0 690.4L518.5 679.3L526.4 668.8L526.3 663.9L531.3 659.9L531.1 654.7L537.2 649.7L537.9 642.4L543.7 635.6L550.2 633.0L552.6 627.7L561.9 622.3L592.9 625.9L593.5 633.9L599.3 630.9L601.5 637.6L603.3 630.8L617.0 630.3L617.1 627.6L620.1 630.4L623.4 627.7L625.3 629.9L626.1 626.7L631.4 628.0L635.2 625.9L641.0 632.2L639.5 637.8L644.2 643.0L640.8 648.5L646.2 661.7L654.4 660.2L658.1 662.8L653.8 671.8L655.6 676.1L653.0 677.7L655.9 679.1L653.0 683.3L660.5 689.1L658.8 692.9L662.2 694.4L661.6 697.8L675.0 696.8L676.9 695.8L674.4 693.5L676.8 690.0L684.3 691.8L698.3 685.7L702.4 690.7L708.3 689.9L713.6 692.3L711.0 696.1L698.7 699.9L696.4 705.8L700.3 709.3L695.9 708.5L691.8 713.1L684.1 715.6L684.2 720.4L673.8 718.9L666.8 721.4ZM686.1 722.7L682.8 722.1L686.0 718.0L688.3 719.3L688.4 723.4L686.1 722.7Z"/>
       <path id="uf-TO" class="uf" data-uf="TO" data-nome="Tocantins" d="M645.7 357.0L644.8 359.0L648.3 359.1L652.0 367.5L656.8 369.3L654.8 375.4L658.4 377.7L661.4 386.1L675.0 388.5L677.2 386.0L674.2 392.6L665.1 397.9L663.4 404.2L655.5 413.5L658.8 419.1L668.0 421.7L662.6 421.9L661.2 427.7L666.0 428.5L660.7 431.9L661.8 439.2L664.1 443.0L666.5 442.8L663.5 445.3L662.9 454.2L667.3 453.6L661.5 455.2L660.2 451.1L659.3 454.7L652.3 454.7L636.3 462.5L631.4 458.0L630.4 466.9L627.0 463.1L621.3 461.2L618.9 462.9L618.7 459.0L612.3 462.6L610.8 458.6L608.9 463.2L608.5 456.9L602.5 450.7L599.7 454.4L596.3 450.3L593.5 452.6L590.4 462.1L568.6 451.5L572.1 440.6L566.8 444.3L563.4 452.0L560.8 451.0L558.8 445.9L560.9 441.4L558.4 424.6L560.0 421.2L557.9 417.6L561.1 408.1L561.2 398.1L574.6 364.6L592.4 342.3L595.6 328.1L590.1 321.8L594.8 314.2L594.2 306.7L607.1 300.2L610.8 292.7L613.7 293.3L612.6 288.3L617.3 282.7L615.8 278.0L619.7 274.7L613.7 269.2L605.2 268.6L610.5 264.2L624.4 265.4L626.5 268.7L634.6 272.4L637.5 290.6L633.9 307.9L628.8 313.4L634.6 315.7L632.5 319.3L634.5 319.2L645.4 334.3L655.8 330.4L658.8 333.3L658.1 339.6L651.0 342.7L645.7 357.0Z"/>
-            </g>
-            <g class="mapa__pinos" id="mapaPinos" aria-hidden="true"></g>
-          </svg>
-          <figcaption class="mapa__leg">
-            <span class="mapa__chave"><i class="mapa__cor mapa__cor--on"></i> Estados atendidos</span>
-            <span class="mapa__chave"><i class="mapa__cor mapa__cor--off"></i> Consulte disponibilidade</span>
-          </figcaption>
-        </figure>
+          </g>
+          <g class="cob__pinos" id="mapaPinos" aria-hidden="true"></g>
+        </svg>
 
-        <ul class="ufs" id="listaUfs">
+        <div class="cob__balao" id="cobBalao" hidden aria-hidden="true"></div>
+
+        <figcaption class="cob__leg">
+          <span><i class="cob__amostra cob__amostra--on"></i> Área de atuação</span>
+          <span><i class="cob__amostra cob__amostra--off"></i> Fora da área de atuação</span>
+          <em>Representação ilustrativa</em>
+        </figcaption>
+      </figure>
+
+      <div class="cob__lado">
+        <p class="cab__olho">Explore por região</p>
+        <div class="cob__chips" id="cobChips" role="tablist" aria-label="Filtrar o mapa por região"></div>
+
+        <p class="cob__resumo">
+          <strong><span id="cobNum">0</span> unidades federativas</strong>
+          <span id="cobTexto">atendidas em 4 regiões do país.</span>
+        </p>
+
+        <ul class="cob__ufs-lista" id="listaUfs">
           <!-- preenchido por js/main.js a partir de TL.estados -->
         </ul>
+
+        <div class="cob__acoes">
+          <a class="btn btn--red" href="#contato" data-orcamento>
+            Solicite uma cotação <svg class="ic" aria-hidden="true"><use href="#i-seta"/></svg>
+          </a>
+        </div>
+
         <noscript>
           <p class="semjs">
             <strong>Estados atendidos:</strong> São Paulo, Minas Gerais, Rio de Janeiro, Paraná,
@@ -519,12 +574,8 @@
           </p>
         </noscript>
       </div>
+
     </div>
-
-    <p class="sobre__reg anim">
-      <strong>Transportes Lucas Ltda</strong> · CNPJ 11.091.193/0001-50 · RNTRC 012613874
-    </p>
-
   </div>
 </section>
 
@@ -811,6 +862,7 @@
       <ul class="rodape__links">
         <li><a href="#inicio">Home</a></li>
         <li><a href="#sobre">Sobre Nós</a></li>
+        <li><a href="#cobertura">Cobertura</a></li>
         <li><a href="#frota">Frota</a></li>
         <li><a href="#servicos">Serviços</a></li>
         <li><a href="#segmentos">Segmentos</a></li>

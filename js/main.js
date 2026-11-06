@@ -44,7 +44,10 @@
       ul.appendChild(li);
     });
 
-    if (SEM_MOVIMENTO || !('IntersectionObserver' in window)) return;
+    // Os números sobem de 0 até o valor mesmo com "animações" desligadas no
+    // sistema: é contagem de texto, não deslocamento na tela, e o cliente
+    // pediu explicitamente esse efeito.
+    if (!('IntersectionObserver' in window)) return;
 
     var obs = new IntersectionObserver(function (ens, o) {
       ens.forEach(function (en) {
@@ -53,7 +56,10 @@
         contar(en.target);
       });
     }, { threshold: .5 });
-    $$('.num__v', ul).forEach(function (el) { obs.observe(el); });
+    $$('.num__v', ul).forEach(function (el) {
+      el.textContent = '0' + (el.dataset.sufixo || '');
+      obs.observe(el);
+    });
   }
 
   function contar(el) {
@@ -130,7 +136,9 @@
   }
 
   /* ===================================================================
-     COBERTURA — lista de estados + mapa
+     ÁREA DE ATUAÇÃO — mapa interativo
+     Filtro por região, balão ao passar o mouse, contador animado e
+     clique no estado abrindo o orçamento já com a rota citada.
      =================================================================== */
   // Centros visuais dos estados no viewBox "0 0 1000 972" do SVG do mapa.
   var CENTROS = {
@@ -139,64 +147,208 @@
   };
 
   function montarCobertura() {
-    var lista = $('#listaUfs');
     var svg = $('#mapaBrasil');
-    var pinos = $('#mapaPinos');
-    var estados = TL.estados || [];
-
-    if (lista) {
-      estados.forEach(function (e) {
-        var li = document.createElement('li');
-        li.className = 'uf-item';
-        li.dataset.uf = e.uf;
-        li.innerHTML =
-          '<span class="uf-item__sig">' + e.uf + '</span>' +
-          '<span class="uf-item__nome">' + e.nome + '</span>';
-        lista.appendChild(li);
-      });
-    }
-
     if (!svg) return;
 
+    var lista = $('#listaUfs');
+    var pinos = $('#mapaPinos');
+    var chips = $('#cobChips');
+    var balao = $('#cobBalao');
+    var painel = $('.cob__painel');
+    var elNum = $('#cobNum');
+    var elTexto = $('#cobTexto');
+
+    var estados = TL.estados || [];
+    var ufs = TL.ufs || {};
+    var atendidos = {};
+    estados.forEach(function (e) { atendidos[e.uf] = e; });
+
+    var regioesAtendidas = [];
+    estados.forEach(function (e) {
+      if (regioesAtendidas.indexOf(e.regiao) < 0) regioesAtendidas.push(e.regiao);
+    });
+
+    /* ---------- pinta o mapa e monta a lista ---------- */
     estados.forEach(function (e) {
       var path = svg.querySelector('#uf-' + e.uf);
       if (!path) { console.warn('[TL] estado sem path no mapa: ' + e.uf); return; }
       path.classList.add('on');
-
-      var t = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-      t.textContent = e.nome;
-      path.appendChild(t);
+      path.dataset.regiao = e.regiao;
 
       var c = CENTROS[e.uf];
       if (c && pinos) {
-        var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        txt.setAttribute('x', c[0]);
-        txt.setAttribute('y', c[1] + 9);
-        txt.textContent = e.uf;
-        pinos.appendChild(txt);
+        var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.dataset.uf = e.uf;
+        g.dataset.regiao = e.regiao;
+        var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        t.setAttribute('x', c[0]);
+        t.setAttribute('y', c[1] + 8);
+        t.textContent = e.uf;
+        g.appendChild(t);
+        pinos.appendChild(g);
+      }
+
+      if (lista) {
+        var li = document.createElement('li');
+        li.className = 'uf-item';
+        li.dataset.uf = e.uf;
+        li.dataset.regiao = e.regiao;
+        li.innerHTML =
+          '<span class="uf-item__sig">' + e.uf + '</span>' +
+          '<span class="uf-item__nome">' + e.nome + '</span>';
+        lista.appendChild(li);
       }
     });
 
-    function realce(uf, on) {
-      var p = svg.querySelector('#uf-' + uf);
-      var i = lista && lista.querySelector('[data-uf="' + uf + '"]');
-      if (p) p.classList.toggle('realce', on);
-      if (i) i.classList.toggle('ativo', on);
+    // guarda a região de todo estado, inclusive os não atendidos
+    $$('.uf', svg).forEach(function (p) {
+      var uf = p.dataset.uf;
+      if (!p.dataset.regiao && ufs[uf]) p.dataset.regiao = ufs[uf][1];
+    });
+
+    /* ---------- contador ---------- */
+    function animarNumero(el, alvo) {
+      if (!el) return;
+      var de = parseInt(el.textContent, 10) || 0;
+      if (de === alvo) return;
+      var dur = 500, t0 = null;
+      function passo(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min((t - t0) / dur, 1);
+        el.textContent = Math.round(de + (alvo - de) * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(passo);
+      }
+      requestAnimationFrame(passo);
     }
 
-    $$('.uf-item', lista).forEach(function (item) {
-      var uf = item.dataset.uf;
-      item.addEventListener('mouseenter', function () { realce(uf, true); });
-      item.addEventListener('mouseleave', function () { realce(uf, false); });
-    });
+    /* ---------- filtro por região ---------- */
+    var filtro = null;      // null = todas
+    var jaApareceu = false; // só anima o número depois que a seção entra na tela
 
-    estados.forEach(function (e) {
-      var p = svg.querySelector('#uf-' + e.uf);
-      if (!p) return;
-      p.addEventListener('mouseenter', function () { realce(e.uf, true); });
-      p.addEventListener('mouseleave', function () { realce(e.uf, false); });
-      p.addEventListener('click', function () { abrirModal('Consulta de rota — ' + e.nome); });
+    function aplicar() {
+      $$('.uf', svg).forEach(function (p) {
+        var dela = !filtro || p.dataset.regiao === filtro;
+        p.classList.toggle('apaga', !dela);
+        p.classList.toggle('destaca', !!filtro && dela && p.classList.contains('on'));
+      });
+      $$('g[data-uf]', pinos).forEach(function (g) {
+        g.classList.toggle('apaga', !(!filtro || g.dataset.regiao === filtro));
+      });
+      if (lista) {
+        $$('.uf-item', lista).forEach(function (i) {
+          i.classList.toggle('apaga', !(!filtro || i.dataset.regiao === filtro));
+        });
+      }
+
+      var n = filtro
+        ? estados.filter(function (e) { return e.regiao === filtro; }).length
+        : estados.length;
+
+      if (jaApareceu) animarNumero(elNum, n);
+      if (elTexto) {
+        if (!filtro) {
+          elTexto.textContent = 'atendidas em ' + regioesAtendidas.length + ' regiões do país.';
+        } else if (n === 0) {
+          elTexto.textContent = 'na região ' + filtro + ' — ainda fora da nossa rota.';
+        } else {
+          elTexto.textContent = (n === 1 ? 'atendida' : 'atendidas') + ' na região ' + filtro + '.';
+        }
+      }
+
+      $$('.chip', chips).forEach(function (c) {
+        c.setAttribute('aria-selected', String(c.dataset.regiao === (filtro || '')));
+      });
+    }
+
+    if (chips) {
+      var opcoes = [{ r: '', rotulo: 'Área atendida' }];
+      (TL.regioes || []).forEach(function (r) {
+        opcoes.push({
+          r: r,
+          rotulo: r,
+          fora: !regioesAtendidas.length || regioesAtendidas.indexOf(r) < 0,
+        });
+      });
+
+      opcoes.forEach(function (o) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip' + (o.fora ? ' chip--fora' : '');
+        b.dataset.regiao = o.r;
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(o.r === ''));
+        b.innerHTML = o.rotulo + (o.fora ? '<span class="chip__tag">não atendida</span>' : '');
+        // "Área atendida" limpa o filtro; clicar de novo numa região também
+        b.addEventListener('click', function () {
+          filtro = (o.r === '') ? null : (filtro === o.r ? null : o.r);
+          aplicar();
+        });
+        chips.appendChild(b);
+      });
+    }
+
+    /* ---------- balão ---------- */
+    function mostrarBalao(ev, uf) {
+      if (!balao || !painel) return;
+      var dados = ufs[uf];
+      if (!dados) return;
+      var ok = !!atendidos[uf];
+      balao.className = 'cob__balao' + (ok ? ' ok' : '');
+      balao.innerHTML = '<b>' + dados[0] + '</b><span>' +
+        (ok ? 'Área de atuação · ' + dados[1] : 'Fora da nossa rota · ' + dados[1]) + '</span>';
+      var r = painel.getBoundingClientRect();
+      balao.style.left = (ev.clientX - r.left) + 'px';
+      balao.style.top = (ev.clientY - r.top) + 'px';
+      balao.hidden = false;
+    }
+    function esconderBalao() { if (balao) balao.hidden = true; }
+
+    $$('.uf', svg).forEach(function (p) {
+      var uf = p.dataset.uf;
+      p.addEventListener('mousemove', function (ev) { mostrarBalao(ev, uf); });
+      p.addEventListener('mouseleave', esconderBalao);
+      if (atendidos[uf]) {
+        p.addEventListener('click', function () {
+          esconderBalao();
+          abrirModal('Consulta de rota — ' + atendidos[uf].nome);
+        });
+      }
     });
+    if (painel) painel.addEventListener('mouseleave', esconderBalao);
+
+    /* ---------- realce cruzado lista ⇄ mapa ---------- */
+    if (lista) {
+      $$('.uf-item', lista).forEach(function (item) {
+        var p = svg.querySelector('#uf-' + item.dataset.uf);
+        item.addEventListener('mouseenter', function () {
+          item.classList.add('ativo'); if (p) p.classList.add('realce');
+        });
+        item.addEventListener('mouseleave', function () {
+          item.classList.remove('ativo'); if (p) p.classList.remove('realce');
+        });
+      });
+    }
+
+    aplicar();
+    if (elNum) elNum.textContent = '0';   // parte do zero
+
+    /* ---------- o número sobe quando a seção entra na tela ---------- */
+    var secao = $('#cobertura');
+    if ('IntersectionObserver' in window && secao) {
+      new IntersectionObserver(function (ens, o) {
+        ens.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          o.unobserve(en.target);
+          jaApareceu = true;
+          animarNumero(elNum, filtro
+            ? estados.filter(function (e) { return e.regiao === filtro; }).length
+            : estados.length);
+        });
+      }, { threshold: .25 }).observe(secao);
+    } else {
+      jaApareceu = true;
+      if (elNum) elNum.textContent = estados.length;
+    }
   }
 
   /* ===================================================================
